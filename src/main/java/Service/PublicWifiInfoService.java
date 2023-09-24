@@ -1,7 +1,7 @@
 package Service;
 
-import Dto.PublicWifi;
-import Dto.PublicWifiInfoResponse;
+import Dto.PublicWifiDto;
+import Dto.PublicWifiInfoResponseDto;
 import com.google.gson.Gson;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -32,8 +32,8 @@ public final class PublicWifiInfoService {
         }
     }
 
-    public List<PublicWifi> getAllPublicWifi() {
-        List<PublicWifi> result = new ArrayList<>();
+    public List<PublicWifiDto> getAllPublicWifi() {
+        List<PublicWifiDto> result = new ArrayList<>();
         int totalCount = 0;
         int start = 1;
         int end = MAX_COUNT_PER_REQUEST;
@@ -44,7 +44,7 @@ public final class PublicWifiInfoService {
                 break;
             }
 
-            PublicWifiInfoResponse response = gson.fromJson(responseBody, PublicWifiInfoResponse.class);
+            PublicWifiInfoResponseDto response = gson.fromJson(responseBody, PublicWifiInfoResponseDto.class);
             totalCount = response.getPublicWifiInfo().getListTotalCount(); // 중복 초기화
             result.addAll(response.getPublicWifiInfo().getPublicWifiList());
             start += MAX_COUNT_PER_REQUEST;
@@ -74,7 +74,7 @@ public final class PublicWifiInfoService {
 
     public static void main(String[] args) throws IOException {
         PublicWifiInfoService service = new PublicWifiInfoService();
-        List<PublicWifi> list = service.getAllPublicWifi();
+        List<PublicWifiDto> list = service.getAllPublicWifi();
         System.out.println(list);
     }
 }
