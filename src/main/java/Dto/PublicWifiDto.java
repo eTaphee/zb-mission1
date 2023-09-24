@@ -1,7 +1,6 @@
 package Dto;
 
 import Gson.LocalDateTimeDeserializer;
-import Gson.ManageNoDeserializer;
 import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
 import lombok.Builder;
@@ -11,7 +10,7 @@ import java.time.LocalDateTime;
 
 @Builder
 @Getter
-public final class PublicWifi {
+public final class PublicWifiDto {
     @SerializedName("X_SWIFI_MGR_NO")
 //    @JsonAdapter(ManageNoDeserializer.class)
     private String manageNo;

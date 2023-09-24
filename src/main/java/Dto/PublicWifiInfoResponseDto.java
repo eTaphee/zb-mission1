@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName;
 import lombok.Getter;
 
 @Getter
-public final class PublicWifiInfoResponse {
+public final class PublicWifiInfoResponseDto {
     @SerializedName("TbPublicWifiInfo")
-    private PublicWifiInfo publicWifiInfo;
+    private PublicWifiInfoDto publicWifiInfo;
 }

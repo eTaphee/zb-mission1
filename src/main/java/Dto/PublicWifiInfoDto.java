@@ -6,10 +6,10 @@ import lombok.Getter;
 import java.util.List;
 
 @Getter
-public final class PublicWifiInfo {
+public final class PublicWifiInfoDto {
     @SerializedName("list_total_count")
     private int listTotalCount;
 
     @SerializedName("row")
-    private List<PublicWifi> publicWifiList;
+    private List<PublicWifiDto> publicWifiList;
 }
