@@ -7,7 +7,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,7 +15,6 @@ import org.sqlite.Function;
 
 public class PublicWifiDao extends BaseDao {
     private static final Function getDistanceWGS84 = new Function() {
-
         private static final double R = 6378.137;
 
         @Override
@@ -55,107 +53,52 @@ public class PublicWifiDao extends BaseDao {
 
     public List<PublicWifi> findByLocation(double latitude, double longitude) {
         List<PublicWifi> publicWifiList = new ArrayList<>();
-        Connection conn = null;
-        PreparedStatement statement = null;
-        ResultSet resultSet = null;
 
-        try {
-            conn = getConnection();
-
+        try (Connection conn = getConnection()) {
             Function.create(conn, "distance", getDistanceWGS84);
 
-            statement = conn.prepareStatement("SELECT distance(?, ?, lat, lnt) as distance, * from public_wifi_info order by distance asc limit 20");
-            statement.setDouble(1, latitude);
-            statement.setDouble(2, longitude);
+            try (PreparedStatement statement = conn.prepareStatement("SELECT distance(?, ?, lat, lnt) as distance, * from public_wifi_info order by distance asc limit 20")) {
+                statement.setDouble(1, latitude);
+                statement.setDouble(2, longitude);
 
-            resultSet = statement.executeQuery();
-            while (resultSet.next()) {
-                publicWifiList.add(
-                        PublicWifi.builder()
-                                .distance(resultSet.getDouble("distance"))
-                                .manageNo(resultSet.getString("mgr_no"))
-                                .wrdofc(resultSet.getString("wrdofc"))
-                                .mainName(resultSet.getString("main_nm"))
-                                .address1(resultSet.getString("adres1"))
-                                .address2(resultSet.getString("adres2"))
-                                .installFloor(resultSet.getString("instl_floor"))
-                                .installType(resultSet.getString("instl_ty"))
-                                .installMBY(resultSet.getString("instl_mby"))
-                                .serviceSegment(resultSet.getString("svc_se"))
-                                .cmcwr(resultSet.getString("cmcwr"))
-                                .installYear(resultSet.getString("cnstc_year"))
-                                .inoutDoor(resultSet.getString("inout_door"))
-                                .remars3(resultSet.getString("remars3"))
-                                .latitude(resultSet.getDouble("lat"))
-                                .longitude(resultSet.getDouble("lnt"))
-                                .workDateTime(LocalDateTime.parse(resultSet.getString("work_dttm")))
-                                .build());
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    while (resultSet.next()) {
+                        publicWifiList.add(PublicWifi.from(resultSet));
+                    }
+                    return publicWifiList;
+                }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                Function.destroy(conn, "distance");
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-
-            try {
-                if (resultSet != null && !resultSet.isClosed()) {
-                    resultSet.close();
-                }
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-
-            try {
-                if (statement != null && !statement.isClosed()) {
-                    statement.close();
-                }
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-
-            try {
-                if (conn != null && !conn.isClosed()) {
-                    conn.close();
-                }
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
+            throw new RuntimeException(e);
         }
-
-        return publicWifiList;
     }
 
     public int bulkInsert(List<PublicWifiDto> list) {
-        Connection conn = null;
-        PreparedStatement statement = null;
         int affectedRows = 0;
 
-        try {
-            conn = getConnection();
+        try (
+                Connection conn = getConnection();
+                PreparedStatement statement = conn.prepareStatement("" +
+                        " insert into public_wifi_info (" +
+                        "mgr_no, " +
+                        "wrdofc, " +
+                        "main_nm, " +
+                        "adres1, " +
+                        "adres2, " +
+                        "instl_floor, " +
+                        "instl_ty, " +
+                        "instl_mby, " +
+                        "svc_se, " +
+                        "cmcwr, " +
+                        "cnstc_year, " +
+                        "inout_door, " +
+                        "remars3, " +
+                        "lat, " +
+                        "lnt, " +
+                        "work_dttm) " +
+                        "values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ");
+        ) {
             conn.setAutoCommit(false);
-
-            statement = conn.prepareStatement("" +
-                    " insert into public_wifi_info (" +
-                    "mgr_no, " +
-                    "wrdofc, " +
-                    "main_nm, " +
-                    "adres1, " +
-                    "adres2, " +
-                    "instl_floor, " +
-                    "instl_ty, " +
-                    "instl_mby, " +
-                    "svc_se, " +
-                    "cmcwr, " +
-                    "cnstc_year, " +
-                    "inout_door, " +
-                    "remars3, " +
-                    "lat, " +
-                    "lnt, " +
-                    "work_dttm) " +
-                    "values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ");
 
             for (PublicWifiDto dto : list) {
                 double latitude = dto.getLatitude();
@@ -182,46 +125,14 @@ public class PublicWifiDao extends BaseDao {
             }
 
             conn.commit();
-        } catch (SQLException e1) {
-            try {
-                if (conn != null) {
-                    conn.rollback();
-                }
-            } catch (SQLException e2) {
-                System.out.println(e2.getMessage());
-            }
-            System.out.println(e1.getMessage());
-        } finally {
-            try {
-                if (statement != null && statement.isClosed()) {
-                    statement.close();
-                }
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-
-            try {
-                if (conn != null && conn.isClosed()) {
-                    conn.close();
-                }
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
+            return affectedRows;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
-
-        return affectedRows;
     }
 
     public static void main(String[] args) throws ClassNotFoundException, IOException {
         double lat = 37.4811992;
         double lnt = 126.8955438;
-
-        PublicWifiDao dao = new PublicWifiDao();
-        List<PublicWifi> publicWifiList = dao.findByLocation(lat, lnt);
-
-//        PublicWifiInfoService service = new PublicWifiInfoService();
-//        dao.bulkInsert(service.getAllPublicWifi());
-
-        System.out.println("finish");
     }
 }
