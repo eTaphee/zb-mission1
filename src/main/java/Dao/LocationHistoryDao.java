@@ -15,146 +15,84 @@ public class LocationHistoryDao extends BaseDao {
         super();
     }
 
-    public List<LocationHistory> findAll() {
-        List<LocationHistory> locationHistoryList = new ArrayList<>();
-        Connection conn = null;
-        PreparedStatement statement = null;
-        ResultSet resultSet = null;
+    public LocationHistory findById(int id) {
+        try (
+                Connection conn = getConnection();
+                PreparedStatement statement = conn.prepareStatement("select * from location_history where id = ?");
+        ) {
+            statement.setInt(1, id);
 
-        try {
-            conn = getConnection();
-
-            statement = conn.prepareStatement("SELECT * from location_history order by id desc");
-            resultSet = statement.executeQuery();
-            while (resultSet.next()) {
-                locationHistoryList.add(
-                        LocationHistory.builder()
-                                .id(resultSet.getInt("id"))
-                                .latitude(resultSet.getDouble("lat"))
-                                .longitude(resultSet.getDouble("lnt"))
-                                .searchDateTime(LocalDateTime.parse(resultSet.getString("search_dttm")))
-                                .build());
+            try (ResultSet resultSet = statement.executeQuery()) {
+                return (resultSet.next()) ? LocationHistory.from(resultSet) : null;
             }
         } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (resultSet != null && !resultSet.isClosed()) {
-                    resultSet.close();
-                }
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-
-            try {
-                if (statement != null && !statement.isClosed()) {
-                    statement.close();
-                }
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-
-            try {
-                if (conn != null && !conn.isClosed()) {
-                    conn.close();
-                }
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
+            throw new RuntimeException(e);
         }
-
-        return locationHistoryList;
     }
 
-    public LocationHistory create(LocationHistory history) {
-        Connection conn = null;
-        PreparedStatement statement = null;
-        ResultSet resultSet = null;
+    public List<LocationHistory> findAll() {
+        List<LocationHistory> locationHistoryList = new ArrayList<>();
 
-        try {
-            conn = getConnection();
-
-            statement = conn.prepareStatement("insert into location_history(lat, lnt, search_dttm) values(?, ?, ?);");
-            statement.setDouble(1, history.getLatitude());
-            statement.setDouble(2, history.getLongitude());
-            statement.setString(3, history.getSearchDateTime().toString());
-            statement.executeUpdate();
-            resultSet = statement.getGeneratedKeys();
-            if (resultSet.next()) {
-                return LocationHistory
-                        .builder()
-                        .id(resultSet.getInt(1))
-                        .latitude(history.getLatitude())
-                        .longitude(history.getLongitude())
-                        .searchDateTime(history.getSearchDateTime()).build();
+        try (
+                Connection conn = getConnection();
+                PreparedStatement statement = conn.prepareStatement("select * from location_history order by id desc");
+                ResultSet resultSet = statement.executeQuery();
+        ) {
+            while (resultSet.next()) {
+                locationHistoryList.add(LocationHistory.from(resultSet));
             }
+            return locationHistoryList;
         } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (resultSet != null && !resultSet.isClosed()) {
-                    resultSet.close();
-                }
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
+            throw new RuntimeException(e);
+        }
+    }
 
-            try {
-                if (statement != null && !statement.isClosed()) {
-                    statement.close();
-                }
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-
-            try {
-                if (conn != null && !conn.isClosed()) {
-                    conn.close();
-                }
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
+    public LocationHistory create(LocationHistory locationHistory) {
+        if (locationHistory == null) {
+            return null;
         }
 
-        return null;
+        try (
+                Connection conn = getConnection();conn.close();
+                PreparedStatement statement = conn.prepareStatement("insert into location_history(lat, lnt, search_dttm) values(?, ?, ?);");
+        ) {
+            LocalDateTime now = LocalDateTime.now();
+            statement.setDouble(1, locationHistory.getLatitude());
+            statement.setDouble(2, locationHistory.getLongitude());
+            statement.setString(3, now.toString());
+            statement.executeUpdate();
+
+            try (ResultSet resultSet = statement.getGeneratedKeys()) {
+                if (resultSet.next()) {
+                    return locationHistory
+                            .toBuilder()
+                            .id(resultSet.getInt(1))
+                            .searchDateTime(now)
+                            .build();
+                }
+                return null;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public boolean delete(LocationHistory locationHistory) {
-        Connection conn = null;
-        PreparedStatement statement = null;
-
-        try {
-            conn = getConnection();
-
-            statement = conn.prepareStatement("delete from location_history where id = ?;");
-            statement.setDouble(1, locationHistory.getId());
-            return (statement.executeUpdate() > 0);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (statement != null && !statement.isClosed()) {
-                    statement.close();
-                }
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-
-            try {
-                if (conn != null && !conn.isClosed()) {
-                    conn.close();
-                }
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
+        if (locationHistory == null) {
+            return false;
         }
 
-        return false;
+        try (
+                Connection conn = getConnection();
+                PreparedStatement statement = conn.prepareStatement("delete from location_history where id = ?");
+        ) {
+            statement.setInt(1, locationHistory.getId());
+            return (statement.executeUpdate() > 0);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static void main(String[] args) throws ClassNotFoundException {
-        LocationHistoryDao dao = new LocationHistoryDao();
-        List list = dao.findAll();
-        System.out.println(list);
     }
 }
