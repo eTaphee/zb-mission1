@@ -53,7 +53,7 @@ public class LocationHistoryDao extends BaseDao {
         }
 
         try (
-                Connection conn = getConnection();conn.close();
+                Connection conn = getConnection();
                 PreparedStatement statement = conn.prepareStatement("insert into location_history(lat, lnt, search_dttm) values(?, ?, ?);");
         ) {
             LocalDateTime now = LocalDateTime.now();
