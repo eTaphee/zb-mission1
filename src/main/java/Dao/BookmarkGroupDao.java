@@ -27,10 +27,10 @@ public class BookmarkGroupDao extends BaseDao {
                     String updatedDttm = resultSet.getString("updated_dttm");
 
                     return BookmarkGroup.builder()
-                            .id(resultSet.getInt(1))
-                            .name(resultSet.getString(2))
-                            .order(resultSet.getInt(3))
-                            .registerDateTime(LocalDateTime.parse(resultSet.getString(4)))
+                            .id(resultSet.getInt("id"))
+                            .name(resultSet.getString("name"))
+                            .order(resultSet.getInt("order"))
+                            .registerDateTime(LocalDateTime.parse(resultSet.getString("reg_dttm")))
                             .updatedDateTime((updatedDttm != null) ? LocalDateTime.parse(updatedDttm) : null)
                             .build();
                 }
@@ -121,5 +121,7 @@ public class BookmarkGroupDao extends BaseDao {
     }
 
     public static void main(String[] args) throws ClassNotFoundException {
+        BookmarkGroupDao dao= new BookmarkGroupDao();
+        System.out.println(dao.findById(2));
     }
 }
