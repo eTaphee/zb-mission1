@@ -23,18 +23,7 @@ public class BookmarkGroupDao extends BaseDao {
             statement.setInt(1, id);
 
             try (ResultSet resultSet = statement.executeQuery()) {
-                if (resultSet.next()) {
-                    String updatedDttm = resultSet.getString("updated_dttm");
-
-                    return BookmarkGroup.builder()
-                            .id(resultSet.getInt("id"))
-                            .name(resultSet.getString("name"))
-                            .order(resultSet.getInt("order"))
-                            .registerDateTime(LocalDateTime.parse(resultSet.getString("reg_dttm")))
-                            .updatedDateTime((updatedDttm != null) ? LocalDateTime.parse(updatedDttm) : null)
-                            .build();
-                }
-                return null;
+                return (resultSet.next()) ? BookmarkGroup.from(resultSet) : null;
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -50,16 +39,7 @@ public class BookmarkGroupDao extends BaseDao {
                 ResultSet resultSet = statement.executeQuery();
         ) {
             while (resultSet.next()) {
-                String updatedDttm = resultSet.getString("updated_dttm");
-
-                bookmarkGroupList.add(BookmarkGroup
-                        .builder()
-                        .id(resultSet.getInt("id"))
-                        .name(resultSet.getString("name"))
-                        .order(resultSet.getInt("order"))
-                        .registerDateTime(LocalDateTime.parse(resultSet.getString("reg_dttm")))
-                        .updatedDateTime((updatedDttm != null) ? LocalDateTime.parse(updatedDttm) : null)
-                        .build());
+                bookmarkGroupList.add(BookmarkGroup.from(resultSet));
             }
             return bookmarkGroupList;
         } catch (SQLException e) {
@@ -68,6 +48,10 @@ public class BookmarkGroupDao extends BaseDao {
     }
 
     public BookmarkGroup create(BookmarkGroup bookmarkGroup) {
+        if (bookmarkGroup == null) {
+            return null;
+        }
+
         try (
                 Connection conn = getConnection();
                 PreparedStatement statement = conn.prepareStatement("insert into bookmark_group(name, [order], reg_dttm) values(?, ?, ?);");
@@ -94,6 +78,10 @@ public class BookmarkGroupDao extends BaseDao {
     }
 
     public boolean update(BookmarkGroup bookmarkGroup) {
+        if (bookmarkGroup == null) {
+            return false;
+        }
+
         try (
                 Connection conn = getConnection();
                 PreparedStatement statement = conn.prepareStatement("update bookmark_group set name = ?, [order] = ?, updated_dttm = ? where id = ?");
@@ -109,6 +97,10 @@ public class BookmarkGroupDao extends BaseDao {
     }
 
     public boolean delete(BookmarkGroup bookmarkGroup) {
+        if (bookmarkGroup == null) {
+            return false;
+        }
+
         try (
                 Connection conn = getConnection();
                 PreparedStatement statement = conn.prepareStatement("delete from bookmark_group where id = ?");
@@ -121,7 +113,5 @@ public class BookmarkGroupDao extends BaseDao {
     }
 
     public static void main(String[] args) throws ClassNotFoundException {
-        BookmarkGroupDao dao= new BookmarkGroupDao();
-        System.out.println(dao.findById(2));
     }
 }
