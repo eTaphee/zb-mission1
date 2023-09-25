@@ -18,17 +18,20 @@ public class BookmarkGroupDao extends BaseDao {
     public BookmarkGroup findById(int id) {
         try (
                 Connection conn = getConnection();
-                PreparedStatement statement = conn.prepareStatement("select id, name, [order], updated_dttm from bookmark_group where id = ?;");
+                PreparedStatement statement = conn.prepareStatement("select id, name, [order], reg_dttm, updated_dttm from bookmark_group where id = ?;");
         ) {
             statement.setInt(1, id);
 
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
+                    String updatedDttm = resultSet.getString("updated_dttm");
+
                     return BookmarkGroup.builder()
                             .id(resultSet.getInt(1))
                             .name(resultSet.getString(2))
                             .order(resultSet.getInt(3))
-                            .updatedDateTime(LocalDateTime.parse(resultSet.getString(4)))
+                            .registerDateTime(LocalDateTime.parse(resultSet.getString(4)))
+                            .updatedDateTime((updatedDttm != null) ? LocalDateTime.parse(updatedDttm) : null)
                             .build();
                 }
                 return null;
@@ -43,16 +46,19 @@ public class BookmarkGroupDao extends BaseDao {
 
         try (
                 Connection conn = getConnection();
-                PreparedStatement statement = conn.prepareStatement("select id, name, [order], updated_dttm from bookmark_group order by [order] desc;");
+                PreparedStatement statement = conn.prepareStatement("select id, name, [order], reg_dttm, updated_dttm from bookmark_group order by [order] desc;");
                 ResultSet resultSet = statement.executeQuery();
         ) {
             while (resultSet.next()) {
+                String updatedDttm = resultSet.getString("updated_dttm");
+
                 bookmarkGroupList.add(BookmarkGroup
                         .builder()
-                        .id(resultSet.getInt(1))
-                        .name(resultSet.getString(2))
-                        .order(resultSet.getInt(3))
-                        .updatedDateTime(LocalDateTime.parse(resultSet.getString(4)))
+                        .id(resultSet.getInt("id"))
+                        .name(resultSet.getString("name"))
+                        .order(resultSet.getInt("order"))
+                        .registerDateTime(LocalDateTime.parse(resultSet.getString("reg_dttm")))
+                        .updatedDateTime((updatedDttm != null) ? LocalDateTime.parse(updatedDttm) : null)
                         .build());
             }
             return bookmarkGroupList;
@@ -64,7 +70,7 @@ public class BookmarkGroupDao extends BaseDao {
     public BookmarkGroup create(BookmarkGroup bookmarkGroup) {
         try (
                 Connection conn = getConnection();
-                PreparedStatement statement = conn.prepareStatement("insert into bookmark_group(name, [order], updated_dttm) values(?, ?, ?);");
+                PreparedStatement statement = conn.prepareStatement("insert into bookmark_group(name, [order], reg_dttm) values(?, ?, ?);");
         ) {
             LocalDateTime now = LocalDateTime.now();
             statement.setString(1, bookmarkGroup.getName());
@@ -77,7 +83,7 @@ public class BookmarkGroupDao extends BaseDao {
                     return bookmarkGroup
                             .toBuilder()
                             .id(resultSet.getInt(1))
-                            .updatedDateTime(now)
+                            .registerDateTime(now)
                             .build();
                 }
                 return null;

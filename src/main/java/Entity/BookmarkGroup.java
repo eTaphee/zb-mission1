@@ -17,6 +17,8 @@ public class BookmarkGroup {
     @Setter
     private int order;
 
+    private LocalDateTime registerDateTime;
+
     private LocalDateTime updatedDateTime;
 
     @Override
