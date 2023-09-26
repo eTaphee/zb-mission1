@@ -2,6 +2,8 @@
 <%@ page import="Entity.BookmarkGroup" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
+    request.setCharacterEncoding("utf-8");
+
     String name = null;
     int order = 0;
 
