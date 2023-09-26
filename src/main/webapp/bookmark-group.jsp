@@ -38,7 +38,7 @@
 
     <c:if test="${bookmarkGroupList == null or bookmarkGroupList.size() == 0}">
         <tr>
-            <td colspan="6" class="empty">북마크 그룹을 등록하세요.</td>
+            <td colspan="6" class="empty">정보가 존재하지 않습니다.</td>
         </tr>
     </c:if>
 
