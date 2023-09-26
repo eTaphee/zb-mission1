@@ -10,6 +10,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import Entity.BookmarkGroup;
 import Entity.PublicWifi;
 import org.sqlite.Function;
 
@@ -49,6 +50,22 @@ public class PublicWifiDao extends BaseDao {
 
     public PublicWifiDao() throws ClassNotFoundException {
         super();
+    }
+
+    public PublicWifi findById(String id) {
+        try (Connection conn = getConnection()) {
+            Function.create(conn, "distance", getDistanceWGS84);
+
+            try (PreparedStatement statement = conn.prepareStatement("select 0 as distance, * from public_wifi_info where mgr_no = ?;")) {
+                statement.setString(1, id);
+
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    return (resultSet.next()) ? PublicWifi.from(resultSet) : null;
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public List<PublicWifi> findByLocation(double latitude, double longitude) {
