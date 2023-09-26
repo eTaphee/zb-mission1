@@ -27,6 +27,8 @@
 <%
     String mgrNo = request.getParameter("mgrNo");
     if (mgrNo != null) {
+        pageContext.setAttribute("mgrNo", mgrNo);
+
         try {
             PublicWifiDao dao = new PublicWifiDao();
             pageContext.setAttribute("wifi", dao.findById(mgrNo));
@@ -48,6 +50,7 @@
 
     <form method="POST" action="./bookmark-add-submit.jsp" onsubmit="return onSubmit()">
         <input type="text" hidden="hidden" id="bookmark_group_id" name="bookmark_group_id">
+        <input type="text" hidden="hidden" id="wifi_manage_no" name="wifi_manage_no" value="${mgrNo}">
         <select onchange="onChange(this.value)">
             <option value="0">북마크 그룹 이름 선택</option>
             <c:if test="${not empty bookmarkGroupList}">

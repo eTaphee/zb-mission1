@@ -35,7 +35,7 @@ public class BookmarkGroupDao extends BaseDao {
 
         try (
                 Connection conn = getConnection();
-                PreparedStatement statement = conn.prepareStatement("select id, name, [order], reg_dttm, updated_dttm from bookmark_group order by [order] desc;");
+                PreparedStatement statement = conn.prepareStatement("select id, name, [order], reg_dttm, updated_dttm from bookmark_group order by [order] asc;");
                 ResultSet resultSet = statement.executeQuery();
         ) {
             while (resultSet.next()) {
