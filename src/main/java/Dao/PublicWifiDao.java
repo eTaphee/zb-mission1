@@ -148,6 +148,16 @@ public class PublicWifiDao extends BaseDao {
         }
     }
 
+    public void deleteAll() {
+        try (Connection conn = getConnection()) {
+            try (PreparedStatement statement = conn.prepareStatement("delete from public_wifi_info;")) {
+                statement.executeUpdate();
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public static void main(String[] args) throws ClassNotFoundException, IOException {
         double lat = 37.4811992;
         double lnt = 126.8955438;
