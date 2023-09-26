@@ -31,7 +31,7 @@
 
     <c:if test="${bookmarkList == null or bookmarkList.size() == 0}">
         <tr>
-            <td colspan="5" class="empty">북마크 정보를 등록하세요.</td>
+            <td colspan="5" class="empty">정보가 존재하지 않습니다.</td>
         </tr>
     </c:if>
 
