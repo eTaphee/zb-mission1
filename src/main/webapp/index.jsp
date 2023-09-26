@@ -2,6 +2,8 @@
 <%@ page import="Entity.PublicWifi" %>
 <%@ page import="java.util.List" %>
 <%@ page import="java.time.format.DateTimeFormatter" %>
+<%@ page import="Dao.LocationHistoryDao" %>
+<%@ page import="Entity.LocationHistory" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
@@ -52,7 +54,6 @@
     <%
         String latParam = request.getParameter("lat");
         String lntParam = request.getParameter("lnt");
-        List<PublicWifi> publicWifiList = null;
         if (latParam != null && lntParam != null) {
             double lat = 0;
             double lnt = 0;
@@ -61,9 +62,11 @@
                 lat = Double.parseDouble(latParam);
                 lnt = Double.parseDouble(lntParam);
 
-                PublicWifiDao dao = new PublicWifiDao();
-                publicWifiList = dao.findByLocation(lat, lnt);
-                pageContext.setAttribute("publicWifiList", publicWifiList);
+                PublicWifiDao wifiDao = new PublicWifiDao();
+                pageContext.setAttribute("publicWifiList", wifiDao.findByLocation(lat, lnt));
+
+                LocationHistoryDao historyDao = new LocationHistoryDao();
+                historyDao.create(LocationHistory.builder().latitude(lat).longitude(lnt).build());
             } catch (Exception e) {
             }
         }
