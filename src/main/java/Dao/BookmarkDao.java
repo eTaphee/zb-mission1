@@ -2,6 +2,7 @@ package Dao;
 
 import Entity.Bookmark;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -11,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BookmarkDao extends BaseDao {
-    public BookmarkDao() throws ClassNotFoundException {
+    public BookmarkDao() throws ClassNotFoundException, IOException {
         super();
     }
 

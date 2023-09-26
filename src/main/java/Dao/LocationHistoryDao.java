@@ -2,6 +2,7 @@ package Dao;
 
 import Entity.LocationHistory;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -11,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LocationHistoryDao extends BaseDao {
-    public LocationHistoryDao() throws ClassNotFoundException {
+    public LocationHistoryDao() throws ClassNotFoundException, IOException {
         super();
     }
 

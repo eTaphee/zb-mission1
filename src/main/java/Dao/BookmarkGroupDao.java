@@ -2,13 +2,14 @@ package Dao;
 
 import Entity.BookmarkGroup;
 
+import java.io.IOException;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 public class BookmarkGroupDao extends BaseDao {
-    public BookmarkGroupDao() throws ClassNotFoundException {
+    public BookmarkGroupDao() throws ClassNotFoundException, IOException {
         super();
     }
 

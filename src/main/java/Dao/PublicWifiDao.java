@@ -48,7 +48,7 @@ public class PublicWifiDao extends BaseDao {
         }
     };
 
-    public PublicWifiDao() throws ClassNotFoundException {
+    public PublicWifiDao() throws ClassNotFoundException, IOException {
         super();
     }
 
