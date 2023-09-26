@@ -38,11 +38,12 @@
         </tr>
         <tr>
             <td colspan="2" style="text-align: center">
-                <div style="display: <%=(mode.equals("add") ? "none" : "content")%>">
+                <div style="display: <%=(mode.equals("add") ? "none" : "contents")%>">
                     <a href="./bookmark-group.jsp">돌아가기</a>
                     |
                 </div>
                 <form>
+                    <input type="hidden" name="id" value="<%=((bookmarkGroup != null) ? bookmarkGroup.getId() : 0)%>">
                     <input type="submit" value="<%=buttonValue%>"/>
                 </form>
             </td>
