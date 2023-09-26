@@ -2,10 +2,7 @@ package Dao;
 
 import Entity.BookmarkGroup;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -101,12 +98,15 @@ public class BookmarkGroupDao extends BaseDao {
             return false;
         }
 
-        try (
-                Connection conn = getConnection();
-                PreparedStatement statement = conn.prepareStatement("delete from bookmark_group where id = ?");
-        ) {
-            statement.setInt(1, bookmarkGroup.getId());
-            return (statement.executeUpdate() > 0);
+        try (Connection conn = getConnection()) {
+            try (PreparedStatement pragmaStatement = conn.prepareStatement("PRAGMA foreign_keys = ON;")) {
+                pragmaStatement.execute();
+            }
+
+            try (PreparedStatement deleteStatement = conn.prepareStatement("delete from bookmark_group where id = ?;")) {
+                deleteStatement.setInt(1, bookmarkGroup.getId());
+                return (deleteStatement.executeUpdate() > 0);
+            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
