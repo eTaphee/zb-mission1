@@ -1,7 +1,6 @@
 package Dao;
 
 import Entity.LocationHistory;
-
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,14 +11,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LocationHistoryDao extends BaseDao {
+
     public LocationHistoryDao() throws ClassNotFoundException, IOException {
         super();
     }
 
     public LocationHistory findById(int id) {
         try (
-                Connection conn = getConnection();
-                PreparedStatement statement = conn.prepareStatement("select * from location_history where id = ?");
+            Connection conn = getConnection();
+            PreparedStatement statement = conn.prepareStatement(
+                "select * from location_history where id = ?")
         ) {
             statement.setInt(1, id);
 
@@ -35,9 +36,10 @@ public class LocationHistoryDao extends BaseDao {
         List<LocationHistory> locationHistoryList = new ArrayList<>();
 
         try (
-                Connection conn = getConnection();
-                PreparedStatement statement = conn.prepareStatement("select * from location_history order by id desc");
-                ResultSet resultSet = statement.executeQuery();
+            Connection conn = getConnection();
+            PreparedStatement statement = conn.prepareStatement(
+                "select * from location_history order by id desc");
+            ResultSet resultSet = statement.executeQuery()
         ) {
             while (resultSet.next()) {
                 locationHistoryList.add(LocationHistory.from(resultSet));
@@ -54,8 +56,9 @@ public class LocationHistoryDao extends BaseDao {
         }
 
         try (
-                Connection conn = getConnection();
-                PreparedStatement statement = conn.prepareStatement("insert into location_history(lat, lnt, search_dttm) values(?, ?, ?);");
+            Connection conn = getConnection();
+            PreparedStatement statement = conn.prepareStatement(
+                "insert into location_history(lat, lnt, search_dttm) values(?, ?, ?);")
         ) {
             LocalDateTime now = LocalDateTime.now();
             statement.setDouble(1, locationHistory.getLatitude());
@@ -66,10 +69,10 @@ public class LocationHistoryDao extends BaseDao {
             try (ResultSet resultSet = statement.getGeneratedKeys()) {
                 if (resultSet.next()) {
                     return locationHistory
-                            .toBuilder()
-                            .id(resultSet.getInt(1))
-                            .searchDateTime(now)
-                            .build();
+                        .toBuilder()
+                        .id(resultSet.getInt(1))
+                        .searchDateTime(now)
+                        .build();
                 }
                 return null;
             }
@@ -84,8 +87,9 @@ public class LocationHistoryDao extends BaseDao {
         }
 
         try (
-                Connection conn = getConnection();
-                PreparedStatement statement = conn.prepareStatement("delete from location_history where id = ?");
+            Connection conn = getConnection();
+            PreparedStatement statement = conn.prepareStatement(
+                "delete from location_history where id = ?")
         ) {
             statement.setInt(1, locationHistory.getId());
             return (statement.executeUpdate() > 0);

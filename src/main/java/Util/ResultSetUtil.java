@@ -4,6 +4,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public final class ResultSetUtil {
+
     public static boolean exists(ResultSet resultSet, String columnLabel) {
         if (resultSet == null) {
             return false;

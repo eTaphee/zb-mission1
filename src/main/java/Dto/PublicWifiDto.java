@@ -3,14 +3,14 @@ package Dto;
 import Gson.LocalDateTimeDeserializer;
 import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
+import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Getter;
-
-import java.time.LocalDateTime;
 
 @Builder
 @Getter
 public final class PublicWifiDto {
+
     @SerializedName("X_SWIFI_MGR_NO")
 //    @JsonAdapter(ManageNoDeserializer.class)
     private String manageNo;
@@ -63,8 +63,6 @@ public final class PublicWifiDto {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("manageNo=" + manageNo + ", mainName=" + mainName);
-        return sb.toString();
+        return "manageNo=" + manageNo + ", mainName=" + mainName;
     }
 }

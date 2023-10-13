@@ -3,17 +3,17 @@ package Service;
 import Dto.PublicWifiDto;
 import Dto.PublicWifiInfoResponseDto;
 import com.google.gson.Gson;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 public final class PublicWifiInfoService {
+
     private final OkHttpClient client;
     private final Gson gson;
     private final String apiKey;
@@ -24,7 +24,8 @@ public final class PublicWifiInfoService {
         gson = new Gson();
 
         Properties prop = new Properties();
-        try (InputStream stream = PublicWifiInfoService.class.getClassLoader().getResourceAsStream("application.properties")) {
+        try (InputStream stream = PublicWifiInfoService.class.getClassLoader()
+            .getResourceAsStream("application.properties")) {
             prop.load(stream);
             apiKey = prop.getProperty("apiKey");
         } catch (Exception e) {
@@ -44,7 +45,8 @@ public final class PublicWifiInfoService {
                 break;
             }
 
-            PublicWifiInfoResponseDto response = gson.fromJson(responseBody, PublicWifiInfoResponseDto.class);
+            PublicWifiInfoResponseDto response = gson.fromJson(responseBody,
+                PublicWifiInfoResponseDto.class);
             totalCount = response.getPublicWifiInfo().getListTotalCount(); // 중복 초기화
             result.addAll(response.getPublicWifiInfo().getPublicWifiList());
             start += MAX_COUNT_PER_REQUEST;
@@ -56,9 +58,10 @@ public final class PublicWifiInfoService {
 
     private Request getRequest(int start, int end) {
         return new Request
-                .Builder()
-                .url(String.format("http://openapi.seoul.go.kr:8088/%s/json/TbPublicWifiInfo/%d/%d", apiKey, start, end))
-                .build();
+            .Builder()
+            .url(String.format("http://openapi.seoul.go.kr:8088/%s/json/TbPublicWifiInfo/%d/%d",
+                apiKey, start, end))
+            .build();
     }
 
     private String getResponseBody(Request request) {

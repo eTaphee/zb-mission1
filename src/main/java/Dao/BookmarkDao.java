@@ -1,7 +1,6 @@
 package Dao;
 
 import Entity.Bookmark;
-
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,24 +11,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BookmarkDao extends BaseDao {
+
     public BookmarkDao() throws ClassNotFoundException, IOException {
         super();
     }
 
     public Bookmark findById(int id) {
         try (
-                Connection conn = getConnection();
-                PreparedStatement statement = conn.prepareStatement("select\n" +
-                        "    b.*,\n" +
-                        "    bg.*,\n" +
-                        "    pwi.*\n" +
-                        "from\n" +
-                        "    bookmark as b\n" +
-                        "inner join\n" +
-                        "        main.bookmark_group bg on bg.id = b.bookmark_group_id\n" +
-                        "inner join\n" +
-                        "        main.public_wifi_info pwi on pwi.mgr_no = b.wifi_mgr_no\n" +
-                        "where b.id = ?");
+            Connection conn = getConnection();
+            PreparedStatement statement = conn.prepareStatement("select\n" +
+                "    b.*,\n" +
+                "    bg.*,\n" +
+                "    pwi.*\n" +
+                "from\n" +
+                "    bookmark as b\n" +
+                "inner join\n" +
+                "        main.bookmark_group bg on bg.id = b.bookmark_group_id\n" +
+                "inner join\n" +
+                "        main.public_wifi_info pwi on pwi.mgr_no = b.wifi_mgr_no\n" +
+                "where b.id = ?")
         ) {
             statement.setInt(1, id);
 
@@ -47,18 +47,18 @@ public class BookmarkDao extends BaseDao {
         }
 
         try (
-                Connection conn = getConnection();
-                PreparedStatement statement = conn.prepareStatement("select\n" +
-                        "    b.*,\n" +
-                        "    bg.*,\n" +
-                        "    pwi.*\n" +
-                        "from\n" +
-                        "    bookmark as b\n" +
-                        "inner join\n" +
-                        "        main.bookmark_group bg on bg.id = b.bookmark_group_id\n" +
-                        "inner join\n" +
-                        "        main.public_wifi_info pwi on pwi.mgr_no = b.wifi_mgr_no\n" +
-                        "where bg.id = ? and pwi.mgr_no = ?");
+            Connection conn = getConnection();
+            PreparedStatement statement = conn.prepareStatement("select\n" +
+                "    b.*,\n" +
+                "    bg.*,\n" +
+                "    pwi.*\n" +
+                "from\n" +
+                "    bookmark as b\n" +
+                "inner join\n" +
+                "        main.bookmark_group bg on bg.id = b.bookmark_group_id\n" +
+                "inner join\n" +
+                "        main.public_wifi_info pwi on pwi.mgr_no = b.wifi_mgr_no\n" +
+                "where bg.id = ? and pwi.mgr_no = ?")
         ) {
             statement.setInt(1, bookmarkGroupId);
             statement.setString(2, wifiManageNo);
@@ -75,19 +75,19 @@ public class BookmarkDao extends BaseDao {
         List<Bookmark> bookmarkList = new ArrayList<>();
 
         try (
-                Connection conn = getConnection();
-                PreparedStatement statement = conn.prepareStatement("select\n" +
-                        "    b.*,\n" +
-                        "    bg.*,\n" +
-                        "    pwi.*\n" +
-                        "from\n" +
-                        "    bookmark as b\n" +
-                        "inner join\n" +
-                        "        main.bookmark_group bg on bg.id = b.bookmark_group_id\n" +
-                        "inner join\n" +
-                        "        main.public_wifi_info pwi on pwi.mgr_no = b.wifi_mgr_no\n" +
-                        "order by b.id asc;");
-                ResultSet resultSet = statement.executeQuery();
+            Connection conn = getConnection();
+            PreparedStatement statement = conn.prepareStatement("select\n" +
+                "    b.*,\n" +
+                "    bg.*,\n" +
+                "    pwi.*\n" +
+                "from\n" +
+                "    bookmark as b\n" +
+                "inner join\n" +
+                "        main.bookmark_group bg on bg.id = b.bookmark_group_id\n" +
+                "inner join\n" +
+                "        main.public_wifi_info pwi on pwi.mgr_no = b.wifi_mgr_no\n" +
+                "order by b.id asc;");
+            ResultSet resultSet = statement.executeQuery()
         ) {
             while (resultSet.next()) {
                 bookmarkList.add(Bookmark.from(resultSet));
@@ -100,14 +100,15 @@ public class BookmarkDao extends BaseDao {
 
     public Bookmark create(Bookmark bookmark) {
         if (bookmark == null
-        || bookmark.getWifi() == null
-        || bookmark.getGroup() == null) {
+            || bookmark.getWifi() == null
+            || bookmark.getGroup() == null) {
             return null;
         }
 
         try (
-                Connection conn = getConnection();
-                PreparedStatement statement = conn.prepareStatement("insert into bookmark(bookmark_group_id, wifi_mgr_no, reg_dttm) values(?, ?, ?);");
+            Connection conn = getConnection();
+            PreparedStatement statement = conn.prepareStatement(
+                "insert into bookmark(bookmark_group_id, wifi_mgr_no, reg_dttm) values(?, ?, ?);")
         ) {
             LocalDateTime now = LocalDateTime.now();
             statement.setInt(1, bookmark.getGroup().getId());
@@ -118,10 +119,10 @@ public class BookmarkDao extends BaseDao {
             try (ResultSet resultSet = statement.getGeneratedKeys()) {
                 if (resultSet.next()) {
                     return bookmark
-                            .toBuilder()
-                            .id(resultSet.getInt(1))
-                            .registerDateTime(now)
-                            .build();
+                        .toBuilder()
+                        .id(resultSet.getInt(1))
+                        .registerDateTime(now)
+                        .build();
                 }
                 return null;
             }
@@ -136,8 +137,9 @@ public class BookmarkDao extends BaseDao {
         }
 
         try (
-                Connection conn = getConnection();
-                PreparedStatement statement = conn.prepareStatement("delete from bookmark where id = ?");
+            Connection conn = getConnection();
+            PreparedStatement statement = conn.prepareStatement(
+                "delete from bookmark where id = ?")
         ) {
             statement.setInt(1, bookmark.getId());
             return (statement.executeUpdate() > 0);

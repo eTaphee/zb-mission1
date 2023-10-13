@@ -1,16 +1,16 @@
 package Entity;
 
 import Util.ResultSetUtil;
-import lombok.Builder;
-import lombok.Getter;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+import lombok.Builder;
+import lombok.Getter;
 
 @Builder(toBuilder = true)
 @Getter
 public class Bookmark {
+
     private int id;
     private BookmarkGroup group;
     private PublicWifi wifi;
@@ -28,11 +28,11 @@ public class Bookmark {
         regDttm = (regDttm == null) ? ResultSetUtil.getString(resultSet, "b.reg_dttm") : regDttm;
 
         return Bookmark
-                .builder()
-                .id((id != null) ? id.intValue() : 0)
-                .registerDateTime((regDttm != null) ? LocalDateTime.parse(regDttm) : null)
-                .group(BookmarkGroup.from(resultSet))
-                .wifi(PublicWifi.from(resultSet))
-                .build();
+            .builder()
+            .id((id != null) ? id.intValue() : 0)
+            .registerDateTime((regDttm != null) ? LocalDateTime.parse(regDttm) : null)
+            .group(BookmarkGroup.from(resultSet))
+            .wifi(PublicWifi.from(resultSet))
+            .build();
     }
 }

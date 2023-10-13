@@ -5,6 +5,7 @@ import lombok.Getter;
 
 @Getter
 public final class PublicWifiInfoResponseDto {
+
     @SerializedName("TbPublicWifiInfo")
     private PublicWifiInfoDto publicWifiInfo;
 }

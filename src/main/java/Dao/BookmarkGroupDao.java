@@ -1,22 +1,26 @@
 package Dao;
 
 import Entity.BookmarkGroup;
-
 import java.io.IOException;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 public class BookmarkGroupDao extends BaseDao {
+
     public BookmarkGroupDao() throws ClassNotFoundException, IOException {
         super();
     }
 
     public BookmarkGroup findById(int id) {
         try (
-                Connection conn = getConnection();
-                PreparedStatement statement = conn.prepareStatement("select id, name, [order], reg_dttm, updated_dttm from bookmark_group where id = ?;");
+            Connection conn = getConnection();
+            PreparedStatement statement = conn.prepareStatement(
+                "select id, name, [order], reg_dttm, updated_dttm from bookmark_group where id = ?;")
         ) {
             statement.setInt(1, id);
 
@@ -32,9 +36,10 @@ public class BookmarkGroupDao extends BaseDao {
         List<BookmarkGroup> bookmarkGroupList = new ArrayList<>();
 
         try (
-                Connection conn = getConnection();
-                PreparedStatement statement = conn.prepareStatement("select id, name, [order], reg_dttm, updated_dttm from bookmark_group order by [order] asc;");
-                ResultSet resultSet = statement.executeQuery();
+            Connection conn = getConnection();
+            PreparedStatement statement = conn.prepareStatement(
+                "select id, name, [order], reg_dttm, updated_dttm from bookmark_group order by [order] asc;");
+            ResultSet resultSet = statement.executeQuery()
         ) {
             while (resultSet.next()) {
                 bookmarkGroupList.add(BookmarkGroup.from(resultSet));
@@ -51,8 +56,9 @@ public class BookmarkGroupDao extends BaseDao {
         }
 
         try (
-                Connection conn = getConnection();
-                PreparedStatement statement = conn.prepareStatement("insert into bookmark_group(name, [order], reg_dttm) values(?, ?, ?);");
+            Connection conn = getConnection();
+            PreparedStatement statement = conn.prepareStatement(
+                "insert into bookmark_group(name, [order], reg_dttm) values(?, ?, ?);")
         ) {
             LocalDateTime now = LocalDateTime.now();
             statement.setString(1, bookmarkGroup.getName());
@@ -63,10 +69,10 @@ public class BookmarkGroupDao extends BaseDao {
             try (ResultSet resultSet = statement.getGeneratedKeys()) {
                 if (resultSet.next()) {
                     return bookmarkGroup
-                            .toBuilder()
-                            .id(resultSet.getInt(1))
-                            .registerDateTime(now)
-                            .build();
+                        .toBuilder()
+                        .id(resultSet.getInt(1))
+                        .registerDateTime(now)
+                        .build();
                 }
                 return null;
             }
@@ -81,8 +87,9 @@ public class BookmarkGroupDao extends BaseDao {
         }
 
         try (
-                Connection conn = getConnection();
-                PreparedStatement statement = conn.prepareStatement("update bookmark_group set name = ?, [order] = ?, updated_dttm = ? where id = ?");
+            Connection conn = getConnection();
+            PreparedStatement statement = conn.prepareStatement(
+                "update bookmark_group set name = ?, [order] = ?, updated_dttm = ? where id = ?")
         ) {
             statement.setString(1, bookmarkGroup.getName());
             statement.setInt(2, bookmarkGroup.getOrder());
@@ -100,11 +107,13 @@ public class BookmarkGroupDao extends BaseDao {
         }
 
         try (Connection conn = getConnection()) {
-            try (PreparedStatement pragmaStatement = conn.prepareStatement("PRAGMA foreign_keys = ON;")) {
+            try (PreparedStatement pragmaStatement = conn.prepareStatement(
+                "PRAGMA foreign_keys = ON;")) {
                 pragmaStatement.execute();
             }
 
-            try (PreparedStatement deleteStatement = conn.prepareStatement("delete from bookmark_group where id = ?;")) {
+            try (PreparedStatement deleteStatement = conn.prepareStatement(
+                "delete from bookmark_group where id = ?;")) {
                 deleteStatement.setInt(1, bookmarkGroup.getId());
                 return (deleteStatement.executeUpdate() > 0);
             }

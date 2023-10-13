@@ -1,17 +1,17 @@
 package Entity;
 
 import Util.ResultSetUtil;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.time.LocalDateTime;
-
 @Builder(toBuilder = true)
 @Getter
 public class BookmarkGroup {
+
     private int id;
 
     @Setter
@@ -43,12 +43,12 @@ public class BookmarkGroup {
         String updatedDttm = resultSet.getString("updated_dttm");
 
         return BookmarkGroup
-                .builder()
-                .id((id != null) ? id.intValue() : 0)
-                .name(resultSet.getString("name"))
-                .order(resultSet.getInt("order"))
-                .registerDateTime((regDttm != null) ? LocalDateTime.parse(regDttm) : null)
-                .updatedDateTime((updatedDttm != null) ? LocalDateTime.parse(updatedDttm) : null)
-                .build();
+            .builder()
+            .id((id != null) ? id.intValue() : 0)
+            .name(resultSet.getString("name"))
+            .order(resultSet.getInt("order"))
+            .registerDateTime((regDttm != null) ? LocalDateTime.parse(regDttm) : null)
+            .updatedDateTime((updatedDttm != null) ? LocalDateTime.parse(updatedDttm) : null)
+            .build();
     }
 }

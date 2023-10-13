@@ -1,7 +1,7 @@
 package Dao;
 
 import Dto.PublicWifiDto;
-
+import Entity.PublicWifi;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -9,12 +9,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
-import Entity.BookmarkGroup;
-import Entity.PublicWifi;
 import org.sqlite.Function;
 
 public class PublicWifiDao extends BaseDao {
+
     private static final Function getDistanceWGS84 = new Function() {
         private static final double R = 6378.137;
 
@@ -40,7 +38,9 @@ public class PublicWifiDao extends BaseDao {
             double dLat = Math.toRadians(latitude2 - latitude1);
             double dLong = Math.toRadians(longitude2 - longitude1);
 
-            var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(Math.toRadians(latitude1)) * Math.cos(Math.toRadians(latitude2)) * Math.sin(dLong / 2) * Math.sin(dLong / 2);
+            var a = Math.sin(dLat / 2) * Math.sin(dLat / 2)
+                + Math.cos(Math.toRadians(latitude1)) * Math.cos(Math.toRadians(latitude2))
+                * Math.sin(dLong / 2) * Math.sin(dLong / 2);
             var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
             var d = R * c;
 
@@ -56,7 +56,8 @@ public class PublicWifiDao extends BaseDao {
         try (Connection conn = getConnection()) {
             Function.create(conn, "distance", getDistanceWGS84);
 
-            try (PreparedStatement statement = conn.prepareStatement("select 0 as distance, * from public_wifi_info where mgr_no = ?;")) {
+            try (PreparedStatement statement = conn.prepareStatement(
+                "select 0 as distance, * from public_wifi_info where mgr_no = ?;")) {
                 statement.setString(1, id);
 
                 try (ResultSet resultSet = statement.executeQuery()) {
@@ -74,7 +75,8 @@ public class PublicWifiDao extends BaseDao {
         try (Connection conn = getConnection()) {
             Function.create(conn, "distance", getDistanceWGS84);
 
-            try (PreparedStatement statement = conn.prepareStatement("SELECT distance(?, ?, lat, lnt) as distance, * from public_wifi_info order by distance asc limit 20")) {
+            try (PreparedStatement statement = conn.prepareStatement(
+                "SELECT distance(?, ?, lat, lnt) as distance, * from public_wifi_info order by distance asc limit 20")) {
                 statement.setDouble(1, latitude);
                 statement.setDouble(2, longitude);
 
@@ -94,26 +96,25 @@ public class PublicWifiDao extends BaseDao {
         int affectedRows = 0;
 
         try (
-                Connection conn = getConnection();
-                PreparedStatement statement = conn.prepareStatement("" +
-                        " insert into public_wifi_info (" +
-                        "mgr_no, " +
-                        "wrdofc, " +
-                        "main_nm, " +
-                        "adres1, " +
-                        "adres2, " +
-                        "instl_floor, " +
-                        "instl_ty, " +
-                        "instl_mby, " +
-                        "svc_se, " +
-                        "cmcwr, " +
-                        "cnstc_year, " +
-                        "inout_door, " +
-                        "remars3, " +
-                        "lat, " +
-                        "lnt, " +
-                        "work_dttm) " +
-                        "values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ");
+            Connection conn = getConnection();
+            PreparedStatement statement = conn.prepareStatement(" insert into public_wifi_info (" +
+                "mgr_no, " +
+                "wrdofc, " +
+                "main_nm, " +
+                "adres1, " +
+                "adres2, " +
+                "instl_floor, " +
+                "instl_ty, " +
+                "instl_mby, " +
+                "svc_se, " +
+                "cmcwr, " +
+                "cnstc_year, " +
+                "inout_door, " +
+                "remars3, " +
+                "lat, " +
+                "lnt, " +
+                "work_dttm) " +
+                "values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ")
         ) {
             conn.setAutoCommit(false);
 
@@ -150,7 +151,8 @@ public class PublicWifiDao extends BaseDao {
 
     public void deleteAll() {
         try (Connection conn = getConnection()) {
-            try (PreparedStatement statement = conn.prepareStatement("delete from public_wifi_info;")) {
+            try (PreparedStatement statement = conn.prepareStatement(
+                "delete from public_wifi_info;")) {
                 statement.executeUpdate();
             }
         } catch (SQLException e) {
