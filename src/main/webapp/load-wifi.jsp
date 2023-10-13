@@ -1,5 +1,5 @@
-<%@ page import="Dao.PublicWifiDao" %>
-<%@ page import="Service.PublicWifiInfoService" %>
+<%@ page import="dao.PublicWifiDao" %>
+<%@ page import="service.PublicWifiInfoService" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <html>

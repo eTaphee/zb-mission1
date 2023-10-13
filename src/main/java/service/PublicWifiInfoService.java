@@ -1,7 +1,7 @@
-package Service;
+package service;
 
-import Dto.PublicWifiDto;
-import Dto.PublicWifiInfoResponseDto;
+import dto.PublicWifiDto;
+import dto.PublicWifiInfoResponseDto;
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.io.InputStream;

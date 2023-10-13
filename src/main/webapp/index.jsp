@@ -1,9 +1,9 @@
-<%@ page import="Dao.PublicWifiDao" %>
-<%@ page import="Entity.PublicWifi" %>
+<%@ page import="dao.PublicWifiDao" %>
+<%@ page import="entity.PublicWifi" %>
 <%@ page import="java.util.List" %>
 <%@ page import="java.time.format.DateTimeFormatter" %>
-<%@ page import="Dao.LocationHistoryDao" %>
-<%@ page import="Entity.LocationHistory" %>
+<%@ page import="dao.LocationHistoryDao" %>
+<%@ page import="entity.LocationHistory" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>

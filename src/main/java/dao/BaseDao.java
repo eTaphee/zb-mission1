@@ -1,6 +1,6 @@
-package Dao;
+package dao;
 
-import Service.PublicWifiInfoService;
+import service.PublicWifiInfoService;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;

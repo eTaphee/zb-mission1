@@ -1,7 +1,7 @@
-package Dao;
+package dao;
 
-import Dto.PublicWifiDto;
-import Entity.PublicWifi;
+import dto.PublicWifiDto;
+import entity.PublicWifi;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;

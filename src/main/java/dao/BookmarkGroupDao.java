@@ -1,6 +1,6 @@
-package Dao;
+package dao;
 
-import Entity.BookmarkGroup;
+import entity.BookmarkGroup;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;

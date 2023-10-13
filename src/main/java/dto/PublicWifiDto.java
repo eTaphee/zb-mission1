@@ -1,6 +1,6 @@
-package Dto;
+package dto;
 
-import Gson.LocalDateTimeDeserializer;
+import gson.LocalDateTimeDeserializer;
 import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
 import java.time.LocalDateTime;

@@ -1,5 +1,5 @@
-<%@ page import="Dao.LocationHistoryDao" %>
-<%@ page import="Entity.LocationHistory" %>
+<%@ page import="dao.LocationHistoryDao" %>
+<%@ page import="entity.LocationHistory" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
     String historyIdParam = request.getParameter("id");

@@ -1,6 +1,6 @@
-package Dao;
+package dao;
 
-import Entity.LocationHistory;
+import entity.LocationHistory;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;

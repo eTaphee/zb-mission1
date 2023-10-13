@@ -1,5 +1,5 @@
-<%@ page import="Dao.BookmarkGroupDao" %>
-<%@ page import="Entity.BookmarkGroup" %>
+<%@ page import="dao.BookmarkGroupDao" %>
+<%@ page import="entity.BookmarkGroup" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
     int bookmarkGroupId = 0;

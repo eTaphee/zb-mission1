@@ -1,4 +1,4 @@
-<%@ page import="Entity.BookmarkGroup" %>
+<%@ page import="entity.BookmarkGroup" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
     BookmarkGroup bookmarkGroup = (BookmarkGroup) request.getAttribute("bookmarkGroup");

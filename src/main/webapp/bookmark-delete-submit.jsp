@@ -1,5 +1,5 @@
-<%@ page import="Entity.Bookmark" %>
-<%@ page import="Dao.BookmarkDao" %>
+<%@ page import="entity.Bookmark" %>
+<%@ page import="dao.BookmarkDao" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
     BookmarkDao dao = new BookmarkDao();

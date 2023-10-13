@@ -1,9 +1,9 @@
-<%@ page import="Dao.BookmarkDao" %>
-<%@ page import="Entity.Bookmark" %>
-<%@ page import="Entity.PublicWifi" %>
-<%@ page import="Entity.BookmarkGroup" %>
-<%@ page import="Dao.BookmarkGroupDao" %>
-<%@ page import="Dao.PublicWifiDao" %>
+<%@ page import="dao.BookmarkDao" %>
+<%@ page import="entity.Bookmark" %>
+<%@ page import="entity.PublicWifi" %>
+<%@ page import="entity.BookmarkGroup" %>
+<%@ page import="dao.BookmarkGroupDao" %>
+<%@ page import="dao.PublicWifiDao" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
     PublicWifi wifi = null;

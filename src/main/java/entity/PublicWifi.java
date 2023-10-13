@@ -1,6 +1,6 @@
-package Entity;
+package entity;
 
-import Util.ResultSetUtil;
+import util.ResultSetUtil;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
